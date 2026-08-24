@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In | InventoryPilot</title>
+
+  
+  <script src="js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+   
+    redirectIfLoggedIn();
+  </script>
+</head>
+<body class="auth-body">
+
+  <button id="themeToggleBtn" class="theme-toggle-btn auth-theme-toggle" aria-label="Toggle theme">🌙</button>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <a href="index.html" class="brand auth-brand">
+        <span class="brand-mark">IP</span>
+        <span class="brand-name">Inventory<strong>Pilot</strong></span>
+      </a>
+
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Log in to manage your inventory.</p>
+
+      <p class="form-error-text" id="loginFormError"></p>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" data-field="email" placeholder="you@example.com" />
+          <span class="error-text" id="err-loginEmail"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="loginPassword" data-field="password" placeholder="••••••••" />
+            <button type="button" class="toggle-password-btn" data-target="loginPassword" aria-label="Show password">👁️</button>
+          </div>
+          <span class="error-text" id="err-loginPassword"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+      </form>
+
+      <p class="auth-switch">
+        Don't have an account? <a href="signup.html">Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/authPage.js"></script>
+</body>
+</html>

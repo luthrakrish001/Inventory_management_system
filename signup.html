@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | InventoryPilot</title>
+
+
+  <script src="js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="js/storage.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    redirectIfLoggedIn();
+  </script>
+</head>
+<body class="auth-body">
+
+  <button id="themeToggleBtn" class="theme-toggle-btn auth-theme-toggle" aria-label="Toggle theme">🌙</button>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <a href="index.html" class="brand auth-brand">
+        <span class="brand-mark">IP</span>
+        <span class="brand-name">Inventory<strong>Pilot</strong></span>
+      </a>
+
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Start tracking inventory in minutes.</p>
+
+      <p class="form-error-text" id="signupFormError"></p>
+
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" data-field="name" placeholder="Your name" />
+          <span class="error-text" id="err-signupName"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" data-field="email" placeholder="you@example.com" />
+          <span class="error-text" id="err-signupEmail"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="signupPassword" data-field="password" placeholder="At least 8 characters" />
+            <button type="button" class="toggle-password-btn" data-target="signupPassword" aria-label="Show password">👁</button>
+          </div>
+          <ul id="passwordChecklist" class="password-checklist">
+            <li id="ruleLength" class="rule-failed">✗ At least 8 characters</li>
+            <li id="ruleUppercase" class="rule-failed">✗ At least one uppercase letter</li>
+            <li id="ruleSpecial" class="rule-failed">✗ At least one special character</li>
+          </ul>
+          <span class="error-text" id="err-signupPassword"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="signupConfirmPassword">Confirm Password</label>
+          <div class="password-field-wrapper">
+            <input type="password" id="signupConfirmPassword" data-field="confirmPassword" placeholder="Re-enter password" />
+            <button type="button" class="toggle-password-btn" data-target="signupConfirmPassword" aria-label="Show password">👁</button>
+          </div>
+          <span class="error-text" id="err-signupConfirmPassword"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+      </form>
+
+      <p class="auth-switch">
+        Already have an account? <a href="login.html">Log in</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/authPage.js"></script>
+</body>
+</html>
