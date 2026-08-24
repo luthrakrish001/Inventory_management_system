@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InventoryPilot | Smart Inventory & Demand Forecasting</title>
+
+  <!-- theme.js loads FIRST and applies the saved theme immediately,
+       before anything else renders, so there's no flash of the
+       wrong theme on page load. -->
+  <script src="js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- storage.js + auth.js load first, then we check the session
+       immediately — before the rest of the page renders — so a
+       logged-out user is redirected to login.html without ever
+       seeing a flash of the dashboard. -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    requireAuth();
+  </script>
+</head>
+<body>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">IP</span>
+      <span class="brand-name">Inventory<strong>Pilot</strong></span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="#dashboard" class="nav-link active" data-section="dashboard">
+        <span class="nav-icon">&#9635;</span> Dashboard
+      </a>
+      <a href="#products" class="nav-link" data-section="products">
+        <span class="nav-icon">&#9636;</span> Sold Products
+      </a>
+      <a href="#sales" class="nav-link" data-section="sales">
+        <span class="nav-icon">&#8644;</span> Record Sale
+      </a>
+      <a href="#alerts" class="nav-link" data-section="alerts">
+        <span class="nav-icon">&#9888;</span> Reorder Alerts
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+    </div>
+  </aside>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <div class="main-wrapper">
+
+    <!-- Top Navbar -->
+    <header class="topbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search products by name..." />
+      </div>
+
+      <div class="topbar-actions">
+        <select id="filterStatus" class="select-input">
+          <option value="all">All Status</option>
+          <option value="healthy">🟢 Healthy</option>
+          <option value="reorder">🔴 Needs Reorder</option>
+        </select>
+
+        <select id="categoryFilter" class="select-input">
+          <option value="all">All Categories</option>
+        </select>
+
+        <select id="sortBy" class="select-input">
+          <option value="name">Sort: Name</option>
+          <option value="stock">Sort: Stock</option>
+          <option value="demand">Sort: Demand</option>
+          <option value="reorder">Sort: Reorder Point</option>
+        </select>
+
+        <button id="manageCategoriesBtn" class="btn btn-ghost">Categories</button>
+        <button id="openAddProductBtn" class="btn btn-primary">+ Add Product</button>
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+
+        <div class="topbar-user">
+          <div class="topbar-avatar" id="topbarAvatar">—</div>
+          <div class="topbar-user-info">
+            <span class="topbar-user-name" id="topbarUserName">—</span>
+            <span class="topbar-user-email" id="topbarUserEmail">—</span>
+          </div>
+          <button class="btn-logout" id="logoutBtn">Log Out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div id="dashboardView">
+        <!-- ===== Stats Cards ===== -->
+        <section class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Products</span>
+            <span class="stat-value" id="statTotalProducts">0</span>
+          </div>
+          <div class="stat-card stat-healthy">
+            <span class="stat-label">Healthy</span>
+            <span class="stat-value" id="statHealthy">0</span>
+          </div>
+          <div class="stat-card stat-danger">
+            <span class="stat-label">Needs Reorder</span>
+            <span class="stat-value" id="statReorder">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Sales Entries</span>
+            <span class="stat-value" id="statTotalSales">0</span>
+          </div>
+          <div class="stat-card stat-card-usd">
+            <span class="stat-label">Inventory Value (Cost)</span>
+            <span class="stat-value" id="statInventoryValue">₹0</span>
+            <span class="stat-subvalue" id="statInventoryValueUsd">Fetching live USD rate…</span>
+          </div>
+        </section>
+
+        <!-- ===== Reorder Alerts Banner ===== -->
+        <section id="alertBanner" class="alert-banner hidden">
+          <span class="alert-icon">&#9888;</span>
+          <span id="alertText"></span>
+        </section>
+
+        <!-- ===== Top Selling Products ===== -->
+        <section class="panel top-products-panel">
+          <div class="panel-header">
+            <h2>Top Selling Products</h2>
+            <p class="panel-subtitle">Ranked by total units sold across all recorded sales</p>
+          </div>
+
+          <div id="topProductsList" class="top-products-list">
+            <!-- rows injected by ui.js -->
+          </div>
+
+          <p id="topProductsEmpty" class="empty-state hidden">
+            No sales recorded yet. Record a sale to see your top sellers here.
+          </p>
+        </section>
+
+        <!-- ===== Products Table ===== -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Inventory Overview</h2>
+            <p class="panel-subtitle">Live stock levels, demand forecast &amp; reorder status</p>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" id="productsTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Cost Price</th>
+                  <th>Selling Price</th>
+                  <th>Current Stock</th>
+                  <th>Avg Demand / day</th>
+                  <th>Lead Time</th>
+                  <th>Safety Stock</th>
+                  <th>Reorder Point</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- rows injected by ui.js -->
+              </tbody>
+            </table>
+
+            <p id="emptyState" class="empty-state hidden">
+              No products yet. Click <strong>+ Add Product</strong> to get started.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== SOLD PRODUCTS VIEW ("Products" nav) ===== -->
+      <div id="soldProductsView" class="hidden">
+        <section class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Items Sold</span>
+            <span class="stat-value" id="statSoldTotalItems">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value" id="statSoldTotalRevenue">₹0</span>
+          </div>
+          <div class="stat-card stat-healthy">
+            <span class="stat-label">Total Profit</span>
+            <span class="stat-value" id="statSoldTotalProfit">₹0</span>
+          </div>
+        </section>
+
+        <!-- ===== Daily Sales (pick a date, see what sold) ===== -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Daily Sales</h2>
+            <p class="panel-subtitle">Pick a date to see exactly which products sold that day, and their revenue &amp; profit</p>
+          </div>
+
+          <div class="daily-sales-controls">
+            <label for="dailySalesDate">Date</label>
+            <input type="date" id="dailySalesDate" />
+          </div>
+
+          <div class="daily-sales-summary" id="dailySalesSummary">
+            <!-- summary chips injected by ui.js -->
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" id="dailySalesTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Units Sold</th>
+                  <th>Revenue</th>
+                  <th>Profit</th>
+                </tr>
+              </thead>
+              <tbody id="dailySalesTableBody">
+                <!-- rows injected by ui.js -->
+              </tbody>
+            </table>
+
+            <p id="dailySalesEmptyState" class="empty-state hidden">
+              No sales recorded on this date.
+            </p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Sold Products</h2>
+            <p class="panel-subtitle">Every product with at least one recorded sale, with revenue &amp; profit at current prices</p>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" id="soldProductsTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Units Sold</th>
+                  <th>Revenue</th>
+                  <th>Profit</th>
+                </tr>
+              </thead>
+              <tbody id="soldProductsTableBody">
+                <!-- rows injected by ui.js -->
+              </tbody>
+            </table>
+
+            <p id="soldProductsEmptyState" class="empty-state hidden">
+              No sales recorded yet. Record a sale to see it here.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== REORDER ALERTS VIEW ("Reorder Alerts" nav) ===== -->
+      <div id="reorderView" class="hidden">
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Reorder Alerts</h2>
+            <p class="panel-subtitle">Only products that have dropped to or below their reorder point, with current stock left</p>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" id="reorderTable">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Cost Price</th>
+                  <th>Selling Price</th>
+                  <th>Current Stock</th>
+                  <th>Avg Demand / day</th>
+                  <th>Lead Time</th>
+                  <th>Safety Stock</th>
+                  <th>Reorder Point</th>
+                  <th>Reorder</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="reorderTableBody">
+                <!-- rows injected by ui.js -->
+              </tbody>
+            </table>
+
+            <p id="reorderEmptyState" class="empty-state hidden">
+              Nothing needs reordering right now — all stock levels are healthy.
+            </p>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ============ ADD / EDIT PRODUCT MODAL ============ -->
+  <div id="productModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="productModalTitle">Add Product</h3>
+        <button class="modal-close" id="closeProductModal">&times;</button>
+      </div>
+
+      <form id="productForm" novalidate>
+        <input type="hidden" id="productId" />
+
+        <div class="form-grid">
+          <div class="form-group form-group-photo">
+            <label>Product Photo</label>
+            <div class="photo-upload" id="photoUploadBox">
+              <img id="photoPreview" src="" alt="Preview" class="hidden" />
+              <span id="photoPlaceholder">Click to upload image</span>
+            </div>
+            <input type="file" id="productImage" accept="image/*" class="hidden" />
+          </div>
+
+          <div class="form-group">
+            <label for="productName">Product Name *</label>
+            <input type="text" id="productName" placeholder="e.g. Wireless Mouse" />
+            <span class="error-text" id="err-productName"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productCategory">Category *</label>
+            <div class="category-select-row">
+              <select id="productCategory">
+                <option value="">-- Select a category --</option>
+              </select>
+              <button type="button" class="btn-icon-sm" id="manageCategoriesFromProductBtn" title="Manage Categories">+</button>
+            </div>
+            <span class="error-text" id="err-productCategory"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productCP">Cost Price (₹) *</label>
+            <input type="number" id="productCP" placeholder="0" min="0" />
+            <span class="error-text" id="err-productCP"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productSP">Selling Price (₹) *</label>
+            <input type="number" id="productSP" placeholder="0" min="0" />
+            <span class="error-text" id="err-productSP"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productStock">Current Stock *</label>
+            <input type="number" id="productStock" placeholder="0" min="0" />
+            <span class="error-text" id="err-productStock"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productLeadTime">Lead Time (days) *</label>
+            <input type="number" id="productLeadTime" placeholder="0" min="0" />
+            <span class="error-text" id="err-productLeadTime"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="productSafetyStock">Safety Stock *</label>
+            <input type="number" id="productSafetyStock" placeholder="0" min="0" />
+            <span class="error-text" id="err-productSafetyStock"></span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelProductBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ RECORD SALE MODAL ============ -->
+  <div id="saleModal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Record a Sale</h3>
+        <button class="modal-close" id="closeSaleModal">&times;</button>
+      </div>
+
+      <form id="saleForm" novalidate>
+        <div class="form-group">
+          <label for="saleProduct">Product *</label>
+          <select id="saleProduct"></select>
+          <span class="error-text" id="err-saleProduct"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="saleQuantity">Quantity Sold *</label>
+          <input type="number" id="saleQuantity" placeholder="0" min="1" />
+          <span class="error-text" id="err-saleQuantity"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="saleDate">Date *</label>
+          <input type="date" id="saleDate" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelSaleBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Record Sale</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ REORDER MODAL ============ -->
+  <div id="reorderModal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Reorder Product</h3>
+        <button class="modal-close" id="closeReorderModal">&times;</button>
+      </div>
+
+      <form id="reorderForm" novalidate>
+        <input type="hidden" id="reorderProductId" />
+
+        <div class="form-group">
+          <label>Product</label>
+          <input type="text" id="reorderProductName" disabled />
+        </div>
+
+        <div class="form-group">
+          <label>Current Stock</label>
+          <input type="text" id="reorderCurrentStock" disabled />
+        </div>
+
+        <div class="form-group">
+          <label for="reorderQuantity">Quantity to Reorder *</label>
+          <input type="number" id="reorderQuantity" placeholder="0" min="1" />
+          <span class="error-text" id="err-reorderQuantity"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="reorderUnitPrice">Unit Price (₹)</label>
+          <input type="number" id="reorderUnitPrice" placeholder="0" min="0" step="0.01" disabled />
+          <span class="error-text" id="err-reorderUnitPrice"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="reorderExpectedDate">Expected Delivery Date</label>
+          <input type="text" id="reorderExpectedDate" disabled />
+        </div>
+
+        <div class="form-group">
+          <label for="reorderNotes">Notes</label>
+          <textarea id="reorderNotes" rows="2" placeholder="Optional — e.g. delivery instructions"></textarea>
+        </div>
+
+        <div class="reorder-total-bill">
+          <span class="reorder-total-bill-label">Total Bill Amount</span>
+          <span class="reorder-total-bill-value" id="reorderTotalBill">₹0.00</span>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelReorderBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Place Reorder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MANAGE CATEGORIES MODAL ============ -->
+  <div id="categoriesModal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Manage Categories</h3>
+        <button class="modal-close" id="closeCategoriesModal">&times;</button>
+      </div>
+
+      <div class="categories-modal-body">
+        <form id="categoryForm" novalidate class="category-add-form">
+          <div class="form-group">
+            <label for="newCategoryName">New Category</label>
+            <div class="category-add-row">
+              <input type="text" id="newCategoryName" placeholder="e.g. Electronics" />
+              <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            <span class="error-text" id="err-newCategoryName"></span>
+          </div>
+        </form>
+
+        <ul id="categoriesList" class="categories-list">
+          <!-- rows injected by ui.js -->
+        </ul>
+
+        <p id="categoriesEmptyState" class="empty-state hidden">
+          No categories yet. Add your first one above.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOAST NOTIFICATION ============ -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- ============ SCRIPTS (order matters — no modules used) ============ -->
+  <!-- storage.js and auth.js are already loaded in <head> for the auth guard -->
+  <script src="js/utils.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/product.js"></script>
+  <script src="js/sales.js"></script>
+  <script src="js/forecast.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/currency.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
