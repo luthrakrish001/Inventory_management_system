@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InventoryPilot | Smart Inventory & Demand Forecasting</title>
+  <meta name="description" content="InventoryPilot helps small store owners track stock, forecast demand, and know exactly when to reorder — all in one simple dashboard." />
+
+  <!-- theme.js loads first so the saved theme applies before anything paints -->
+  <script src="js/theme.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Public page — no auth guard — but we still check whether
+       someone is already logged in so we can swap "Log In / Sign
+       Up" for a "Go to Dashboard" button (see js/landing.js). -->
+  <script src="js/storage.js"></script>
+</head>
+<body class="landing-body">
+
+  <!-- ============ LANDING NAVBAR ============ -->
+  <header class="landing-nav">
+    <a href="index.html" class="brand landing-brand">
+      <span class="brand-mark">IP</span>
+      <span class="brand-name">Inventory<strong>Pilot</strong></span>
+    </a>
+
+    <nav class="landing-nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+    </nav>
+
+    <div class="landing-nav-actions" id="landingNavActions">
+      <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+      <a href="login.html" class="btn btn-ghost">Log In</a>
+      <a href="signup.html" class="btn btn-primary">Sign Up</a>
+    </div>
+  </header>
+
+  <section class="landing-hero">
+    <div class="landing-hero-glow" aria-hidden="true"></div>
+
+    <div class="landing-hero-grid">
+      <div class="landing-hero-copy">
+        <span class="landing-eyebrow">Built for store owners</span>
+        <h1 class="landing-title">
+          Know what to restock, <span class="landing-title-accent">before you run out.</span>
+        </h1>
+        <p class="landing-subtitle">
+          InventoryPilot tracks your stock, predicts daily demand from your sales history,
+          and tells you exactly when to reorder — so you never lose a sale to an empty shelf again.
+        </p>
+
+        <div class="landing-hero-actions" id="landingHeroActions">
+          <a href="signup.html" class="btn btn-primary btn-lg">Create Free Account</a>
+          <a href="login.html" class="btn btn-ghost btn-lg">Log In</a>
+        </div>
+
+        <p class="landing-welcome-back hidden" id="landingWelcomeBack"></p>
+
+        <p class="landing-trust-line">No credit card required &middot; Set up your first product in under a minute</p>
+      </div>
+
+      <div class="landing-hero-preview" aria-hidden="true">
+        <div class="preview-card">
+          <div class="preview-card-header">
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+          </div>
+
+          <div class="preview-stats-row">
+            <div class="preview-stat">
+              <span class="preview-stat-label">Total Products</span>
+              <span class="preview-stat-value">128</span>
+            </div>
+            <div class="preview-stat preview-stat-success">
+              <span class="preview-stat-label">Healthy</span>
+              <span class="preview-stat-value">104</span>
+            </div>
+            <div class="preview-stat preview-stat-danger">
+              <span class="preview-stat-label">Reorder</span>
+              <span class="preview-stat-value">24</span>
+            </div>
+          </div>
+
+          <div class="preview-panel">
+            <span class="preview-panel-title">Top Selling Products</span>
+            <div class="preview-bar-row">
+              <span class="preview-bar-label">Wireless Mouse</span>
+              <div class="preview-bar-track"><div class="preview-bar-fill" style="width: 92%"></div></div>
+            </div>
+            <div class="preview-bar-row">
+              <span class="preview-bar-label">USB-C Cable</span>
+              <div class="preview-bar-track"><div class="preview-bar-fill" style="width: 71%"></div></div>
+            </div>
+            <div class="preview-bar-row">
+              <span class="preview-bar-label">Desk Lamp</span>
+              <div class="preview-bar-track"><div class="preview-bar-fill" style="width: 54%"></div></div>
+            </div>
+          </div>
+
+          <div class="preview-alert">
+            <span class="preview-alert-icon">&#9888;</span>
+            <span>3 products need reordering</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="landing-features" id="features">
+    <div class="landing-section-header">
+      <span class="landing-section-eyebrow">Features</span>
+      <h2>Everything a small store needs to stay stocked</h2>
+      <p>No spreadsheets, no guesswork — just a live picture of your inventory.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">&#9635;</span>
+        <h3>Live Inventory Dashboard</h3>
+        <p>See total products, healthy vs. low stock, and total inventory value at a glance — updated the moment anything changes.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">&#128200;</span>
+        <h3>Demand Forecasting</h3>
+        <p>A moving average of your recent sales predicts daily demand per product, so restocking decisions are based on data, not guesswork.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">&#9888;</span>
+        <h3>Automatic Reorder Alerts</h3>
+        <p>Reorder point = demand × lead time + safety stock. The moment stock drops below it, that product shows up on your alerts page.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">&#128176;</span>
+        <h3>Sales & Profit Tracking</h3>
+        <p>Record every sale in seconds, then see total units sold, revenue, and profit — plus which products are your top sellers.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">&#9636;</span>
+        <h3>Custom Categories</h3>
+        <p>Define your own product categories and filter your entire catalog by category with one click.</p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">&#128241;</span>
+        <h3>Private, Per-Account Data</h3>
+        <p>Every account's products, sales, and categories are kept completely separate — your data is yours alone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="landing-how" id="how-it-works">
+    <div class="landing-section-header">
+      <span class="landing-section-eyebrow">Getting started</span>
+      <h2>Up and running in three steps</h2>
+    </div>
+
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="how-step-number">1</span>
+        <h3>Create your account</h3>
+        <p>Sign up in seconds — no credit card, no setup fees.</p>
+      </div>
+      <div class="how-step">
+        <span class="how-step-number">2</span>
+        <h3>Add your products</h3>
+        <p>Enter cost, price, stock, lead time, and safety stock for each product — or organize them by category.</p>
+      </div>
+      <div class="how-step">
+        <span class="how-step-number">3</span>
+        <h3>Let InventoryPilot watch your stock</h3>
+        <p>Record sales as they happen, and get automatic reorder alerts before you ever run out.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="landing-cta-wrap">
+    <div class="landing-cta">
+      <h2>Ready to stop guessing what to restock?</h2>
+      <p>It's free to get started — set up your first product in under a minute.</p>
+      <a href="signup.html" class="btn btn-primary btn-lg" id="landingFinalCta">Create Free Account</a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="landing-footer">
+    <div class="brand landing-brand">
+      <span class="brand-mark">IP</span>
+      <span class="brand-name">Inventory<strong>Pilot</strong></span>
+    </div>
+  </footer>
+
+  <script src="js/landing.js"></script>
+</body>
+</html>
