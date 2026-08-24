@@ -54,7 +54,13 @@ applyTheme(getSavedTheme());
  * a sun while in dark mode).
  */
 
-
+function updateThemeToggleIcon(theme) {
+  const btn = document.getElementById("themeToggleBtn");
+  if (!btn) return;
+  btn.textContent = theme === "dark" ? "☀️" : "🌙";
+  btn.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  btn.title = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+}
 // Wire up whichever theme toggle button exists on this page
 // (every page has at most one, with id="themeToggleBtn").
 document.addEventListener("DOMContentLoaded", () => {
