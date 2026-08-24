@@ -4,8 +4,7 @@
    Only this file talks directly to localStorage.
    Every other file must go through these functions instead
    of calling localStorage.getItem/setItem on its own.
-   That way, if we ever change HOW we store data, we only
-   edit this one file.
+   That way, if we ever change HOW we store data,
 ========================================================= */
 
 // Keys we use inside localStorage
@@ -149,10 +148,6 @@ function getCurrentUser() {
   return safeGet(CURRENT_USER_KEY, null);
 }
 
-/**
- * Marks a user as the active session by saving them under
- * CURRENT_USER_KEY. Called right after a successful login.
- */
 function setCurrentUser(user) {
   localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
 }
