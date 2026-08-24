@@ -28,9 +28,5 @@ document.addEventListener("DOMContentLoaded", () => {
     finalCta.href = "dashboard.html";
   }
 
-  const welcomeBack = document.getElementById("landingWelcomeBack");
-  if (welcomeBack) {
-    welcomeBack.textContent = `Welcome back, ${user.name} — pick up right where you left off.`;
-    welcomeBack.classList.remove("hidden");
-  }
+ 
 });
