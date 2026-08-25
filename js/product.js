@@ -1,11 +1,6 @@
 /* =========================================================
    product.js
-   -----------------------------------------------------------
-   All business logic related to PRODUCTS lives here:
-   validating input, adding, updating, and deleting products.
-   This file does not touch the DOM directly — it only works
-   with data. ui.js is responsible for rendering.
-========================================================= */
+
 
 /**
  * Validates the raw form values for a product.
