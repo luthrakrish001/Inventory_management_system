@@ -28,8 +28,6 @@ const TOP_SELLING_LIMIT = 5;
 function getTopSellingProducts(limit = TOP_SELLING_LIMIT) {
   const sales = getSales();
   const products = getProducts();
-
-  // 1) Total quantity sold per productId
   const totalsByProductId = sales.reduce((totals, sale) => {
     totals[sale.productId] = (totals[sale.productId] || 0) + sale.quantity;
     return totals;
