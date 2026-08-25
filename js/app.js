@@ -29,8 +29,6 @@ function initApp() {
 }
 
 /**
- * Displays the current user's name/email in the sidebar.
- * requireAuth() (called in dashboard.html's <head>) already guarantees
  * someone is logged in by the time this runs, but we guard anyway
  * in case this file is ever reused on a page without that check.
  */
@@ -96,7 +94,6 @@ function attachEventListeners() {
   });
   document.getElementById("productImage").addEventListener("change", handleImageSelect);
 
-  // ---------- Product form submit (handles both Add and Edit) ----------
   document.getElementById("productForm").addEventListener("submit", handleProductFormSubmit);
 
   // ---------- Record Sale modal open/close ----------
