@@ -3,13 +3,12 @@ const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_UPPERCASE_REGEX = /[A-Z]/;
 const PASSWORD_SPECIAL_CHAR_REGEX = /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/;'`~]/;
 
-
 function simpleHash(text) {
   let hash = 5381;
   for (let i = 0; i < text.length; i++) {
     hash = (hash * 33) ^ text.charCodeAt(i);
   }
-  // Convert to an unsigned number, then to a string
+
   return (hash >>> 0).toString();
 }
 
