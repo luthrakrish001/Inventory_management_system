@@ -15,9 +15,6 @@ const MOVING_AVERAGE_WINDOW = 5;
  *
  * Example: last 5 sale quantities = [4, 6, 5, 3, 7]
  * Average demand = (4+6+5+3+7) / 5 = 5
- *
- * If the product has fewer than N sales, we simply average
- * whatever sales exist. If it has zero sales, demand is 0.
  */
 function calculateAverageDemand(productId) {
   const sales = getSalesForProduct(productId);
