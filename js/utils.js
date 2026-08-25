@@ -39,7 +39,6 @@ function showToast(message, type = "") {
   if (type) toast.classList.add(`toast-${type}`);
   toast.classList.remove("hidden");
 
-  // Hide it again automatically after 2.5 seconds
   clearTimeout(showToast._timer);
   showToast._timer = setTimeout(() => {
     toast.classList.add("hidden");
