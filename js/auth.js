@@ -1,31 +1,9 @@
-/* =========================================================
-   auth.js
-   -----------------------------------------------------------
-   Handles user accounts and login sessions.
 
-   IMPORTANT (viva note): there is no server here, so there is
-   no truly secure way to store passwords — real applications
-   hash passwords with a strong algorithm (e.g. bcrypt) ON THE
-   SERVER, never in client-side JavaScript. Since this project
-   is scoped to vanilla JS + localStorage only, we run passwords
-   through a simple one-way hash function below purely so we
-   are not saving them as plain readable text. This is a
-   classroom-level demonstration of the CONCEPT of hashing, not
-   production-grade security.
-========================================================= */
-
-// Password rule: at least 8 characters, at least one uppercase
-// letter, and at least one special character.
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_UPPERCASE_REGEX = /[A-Z]/;
 const PASSWORD_SPECIAL_CHAR_REGEX = /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/;'`~]/;
 
-/**
- * A small, dependency-free hash function (djb2 algorithm).
- * Turns any string into a fixed-length string of digits.
- * Same input always produces the same output, but you can't
- * reverse it back into the original password.
- */
+
 function simpleHash(text) {
   let hash = 5381;
   for (let i = 0; i < text.length; i++) {
@@ -35,21 +13,12 @@ function simpleHash(text) {
   return (hash >>> 0).toString();
 }
 
-/**
- * Basic email format check using a regular expression.
- * Not exhaustive (real validation is done server-side normally),
- * just enough to catch obvious typos like "abc@" or "abc.com".
- */
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/**
- * Checks a password against every rule and returns a list of
- * which rules are NOT yet satisfied. Used both for final
- * validation on submit, and for the live checklist shown while
- * the user types on the signup page.
- */
+
 function getPasswordRuleFailures(password) {
   const failures = [];
   if (!password || password.length < PASSWORD_MIN_LENGTH) {
@@ -64,9 +33,7 @@ function getPasswordRuleFailures(password) {
   return failures;
 }
 
-/**
- * Validates the signup form values.
- */
+
 function validateSignup(values) {
   const errors = {};
 
@@ -97,13 +64,6 @@ function validateSignup(values) {
   return { isValid: Object.keys(errors).length === 0, errors };
 }
 
-/**
- * Creates a new user account. Does NOT log the user in —
- * after signing up, the user is sent to the login page and
- * must log in with their new credentials, same as most
- * real-world signup flows ("account created, please log in").
- * Returns the newly created user (without the password field).
- */
 function signupUser(values) {
   const users = getUsers();
 
@@ -119,10 +79,6 @@ function signupUser(values) {
   return { id: newUser.id, name: newUser.name, email: newUser.email };
 }
 
-/**
- * Validates the login form values (presence only —
- * whether the credentials actually match is checked separately).
- */
 function validateLogin(values) {
   const errors = {};
   if (!values.email || values.email.trim() === "") errors.email = "Email is required.";
@@ -130,11 +86,6 @@ function validateLogin(values) {
   return { isValid: Object.keys(errors).length === 0, errors };
 }
 
-/**
- * Checks the given email/password against stored users.
- * Returns the matching user (without password) if credentials
- * are correct, or null if they're wrong.
- */
 function loginUser(values) {
   const users = getUsers();
   const hashedInput = simpleHash(values.password);
@@ -152,30 +103,17 @@ function loginUser(values) {
   return sessionUser;
 }
 
-/**
- * Logs the current user out and sends them back to the login page.
- */
 function logoutUser() {
   clearCurrentUser();
   window.location.href = "index.html";
 }
 
-/**
- * "Auth guard" for protected pages (like the dashboard).
- * If nobody is logged in, redirect to login.html immediately.
- * Called from dashboard.html BEFORE the page body is shown.
- */
 function requireAuth() {
   if (!getCurrentUser()) {
     window.location.href = "login.html";
   }
 }
 
-/**
- * Used on login.html/signup.html — if someone is already logged
- * in and lands on these pages, send them straight to the dashboard
- * instead of showing the login form again.
- */
 function redirectIfLoggedIn() {
   if (getCurrentUser()) {
     window.location.href = "dashboard.html";
