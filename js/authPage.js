@@ -1,10 +1,3 @@
-/* =========================================================
-   authPage.js
-   -----------------------------------------------------------
-   Wires up the login and signup forms. Kept separate from
-   app.js because app.js is specific to the dashboard page —
-   this file only runs on login.html / signup.html.
-========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
@@ -19,15 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     attachPasswordChecklist();
   }
 
-  // Eye icon toggles work on both pages — attach to every one present
+
   document.querySelectorAll(".toggle-password-btn").forEach((btn) => {
     btn.addEventListener("click", handleTogglePassword);
   });
 });
 
-/* =========================================================
-   LOGIN
-========================================================= */
 
 function handleLoginSubmit(e) {
   e.preventDefault();
@@ -55,11 +45,7 @@ function handleLoginSubmit(e) {
   window.location.href = "dashboard.html";
 }
 
-/**
- * If we just arrived here after a successful signup
- * (login.html?signup=success), show a friendly confirmation
- * banner instead of the usual (empty) error area.
- */
+
 function showSignupSuccessMessageIfPresent() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("signup") === "success") {
@@ -69,9 +55,7 @@ function showSignupSuccessMessageIfPresent() {
   }
 }
 
-/* =========================================================
-   SIGNUP
-========================================================= */
+
 
 function handleSignupSubmit(e) {
   e.preventDefault();
@@ -93,16 +77,11 @@ function handleSignupSubmit(e) {
 
   signupUser(values);
 
-  // Send the user to the login page so they log in with their
-  // new credentials, instead of skipping straight to the dashboard.
+
   window.location.href = "login.html?signup=success";
 }
 
-/**
- * Live password checklist: as the user types their new password,
- * show which rules are satisfied (✓) and which are still missing.
- * This runs on every keystroke via the "input" event.
- */
+
 function attachPasswordChecklist() {
   const passwordInput = document.getElementById("signupPassword");
   const checklistBox = document.getElementById("passwordChecklist");
@@ -127,14 +106,7 @@ function attachPasswordChecklist() {
   });
 }
 
-/* =========================================================
-   SHARED: eye icon + error display
-========================================================= */
 
-/**
- * Toggles a password field between hidden (••••) and visible text,
- * and swaps the eye icon so it's clear what will happen on next click.
- */
 function handleTogglePassword(e) {
   const button = e.currentTarget;
   const targetId = button.dataset.target;
@@ -159,8 +131,7 @@ function clearAuthErrors() {
 
 function displayAuthErrors(errors) {
   Object.keys(errors).forEach((key) => {
-    // field ids follow the pattern loginEmail/signupName/etc.,
-    // and error spans follow err-<fieldId>
+ 
     const input = document.querySelector(`[data-field="${key}"]`);
     if (!input) return;
     const errorSpan = document.getElementById(`err-${input.id}`);
