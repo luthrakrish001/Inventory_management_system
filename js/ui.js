@@ -38,8 +38,7 @@ function getFilteredAndSortedProducts() {
 
   let products = getProducts();
 
-  // Attach forecast numbers to every product up front, so we can
-  // filter/sort by them without recalculating repeatedly.
+
   products = products.map((product) => ({
     ...product,
     forecast: getProductForecast(product),
@@ -57,12 +56,11 @@ function getFilteredAndSortedProducts() {
     products = products.filter((product) => product.category === categoryFilter);
   }
 
-  // ----- FILTER (by status) -----
   if (statusFilter !== "all") {
     products = products.filter((product) => product.forecast.status === statusFilter);
   }
 
-  // ----- SORT -----
+
   products.sort((a, b) => {
     switch (sortBy) {
       case "stock":
