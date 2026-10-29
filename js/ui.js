@@ -1,17 +1,3 @@
-/* =========================================================
-   ui.js
-   -----------------------------------------------------------
-   Everything that touches the DOM (reading form values aside)
-   lives here: building table rows, updating stat cards,
-   showing/hiding the empty state, and the reorder alert banner.
-   app.js calls renderDashboard() whenever data changes.
-========================================================= */
-
-/**
- * Master render function — call this any time products or sales
- * change (after add/edit/delete/sale) so the whole dashboard
- * reflects the latest data from MongoDB Atlas.
- */
 function renderDashboard() {
   const visibleProducts = getFilteredAndSortedProducts();
   renderProductsTable(visibleProducts);
@@ -23,12 +9,6 @@ function renderDashboard() {
   renderReorderView();
 }
 
-/**
- * Reads the search box, filter dropdown and sort dropdown,
- * then returns the products array transformed accordingly.
- * Kept in ui.js (rather than product.js) because it depends
- * directly on the current state of the UI controls.
- */
 function getFilteredAndSortedProducts() {
   const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
   const statusFilter = document.getElementById("filterStatus").value;
@@ -44,14 +24,12 @@ function getFilteredAndSortedProducts() {
     forecast: getProductForecast(product),
   }));
 
-  // ----- SEARCH (by name) -----
   if (searchTerm) {
     products = products.filter((product) =>
       product.name.toLowerCase().includes(searchTerm)
     );
   }
 
-  // ----- FILTER (by category) -----
   if (categoryFilter && categoryFilter !== "all") {
     products = products.filter((product) => product.category === categoryFilter);
   }
@@ -78,9 +56,6 @@ function getFilteredAndSortedProducts() {
   return products;
 }
 
-/**
- * Builds and injects one <tr> per product into the table body.
- */
 function renderProductsTable(products) {
   const tbody = document.getElementById("productsTableBody");
   const emptyState = document.getElementById("emptyState");
@@ -99,12 +74,6 @@ function renderProductsTable(products) {
   });
 }
 
-/**
- * Creates a single table row (as a real DOM element) for one product.
- * We build it with document.createElement + template literals rather
- * than one giant innerHTML string, so event listeners can be attached
- * safely afterwards (avoids re-parsing issues with inline onclick).
- */
 function buildProductRow(product) {
   const tr = document.createElement("tr");
   const { averageDemand, reorderPoint, status } = product.forecast;
@@ -147,12 +116,6 @@ function buildProductRow(product) {
   return tr;
 }
 
-/**
- * Creates a single table row for the Reorder Alerts table.
- * Same columns as buildProductRow(), except the "Status" cell
- * swaps the "Needs Reorder" badge for a "Reorder" button that
- * opens the reorder form for that product.
- */
 function buildReorderRow(product) {
   const tr = document.createElement("tr");
   const { averageDemand, reorderPoint } = product.forecast;
@@ -192,9 +155,6 @@ function buildReorderRow(product) {
   return tr;
 }
 
-/**
- * Updates the 4 stat cards at the top of the dashboard.
- */
 function renderStats() {
   const products = getProducts().map((product) => ({
     ...product,
@@ -209,19 +169,11 @@ function renderStats() {
   document.getElementById("statHealthy").textContent = healthyCount;
   document.getElementById("statReorder").textContent = reorderCount;
   document.getElementById("statTotalSales").textContent = sales.length;
-
-  // Inventory value: ₹ total is synchronous (just a reduce() over
-  // products), the $ estimate comes from currency.js's Fetch API
-  // call and fills in a moment later once the request resolves.
   const totalInrValue = calculateTotalInventoryValue();
   document.getElementById("statInventoryValue").textContent = `₹${totalInrValue.toLocaleString("en-IN")}`;
   renderInventoryValueInUsd(totalInrValue);
 }
 
-/**
- * Shows a banner at the top of the dashboard listing which
- * products need reordering right now. Hides itself if none do.
- */
 function renderAlertBanner() {
   const products = getProducts().map((product) => ({
     ...product,
@@ -242,12 +194,6 @@ function renderAlertBanner() {
   banner.classList.remove("hidden");
 }
 
-/**
- * Renders the "Top Selling Products" panel using the ranked list
- * from analytics.js (getTopSellingProducts). Each row shows a
- * rank badge, the product name, a proportional bar (relative to
- * the #1 seller), and the raw quantity sold.
- */
 function renderTopSellingProducts() {
   const container = document.getElementById("topProductsList");
   const emptyState = document.getElementById("topProductsEmpty");
@@ -263,8 +209,6 @@ function renderTopSellingProducts() {
   }
   emptyState.classList.add("hidden");
 
-  // The #1 seller's quantity is used as 100% for the bar widths,
-  // so every other row is shown relative to the top performer.
   const highestQuantity = topProducts[0].quantitySold;
 
   topProducts.forEach((entry, index) => {
@@ -293,17 +237,6 @@ function buildTopProductRow(entry, index, highestQuantity) {
   return row;
 }
 
-/* =========================================================
-   CATEGORIES — dropdowns & management list
-========================================================= */
-
-/**
- * Fills a <select> element with the owner's category list.
- * Shared by the product form's category dropdown and the
- * topbar's category filter dropdown (they only differ in
- * whether the first option is "All Categories" or a
- * "-- Select a category --" placeholder).
- */
 function populateCategorySelect(selectEl, { includeAllOption = false, selectedValue = "" } = {}) {
   if (!selectEl) return;
 
@@ -321,9 +254,6 @@ function populateCategorySelect(selectEl, { includeAllOption = false, selectedVa
   }
   selectEl.appendChild(firstOption);
 
-  // Editing a product whose category was later deleted from the
-  // master list? Still show it as a selectable option so we don't
-  // silently blank out existing data.
   if (!includeAllOption && selectedValue && !categories.includes(selectedValue)) {
     categories.push(selectedValue);
     categories.sort((a, b) => a.localeCompare(b));
@@ -339,11 +269,6 @@ function populateCategorySelect(selectEl, { includeAllOption = false, selectedVa
   selectEl.value = includeAllOption ? "all" : selectedValue;
 }
 
-/**
- * Refills the product form's category dropdown. Called every
- * time the Add/Edit Product modal opens, and again after a
- * category is added/deleted while that modal is open.
- */
 function populateProductCategorySelect(selectedValue = "") {
   populateCategorySelect(document.getElementById("productCategory"), {
     includeAllOption: false,
@@ -351,11 +276,6 @@ function populateProductCategorySelect(selectedValue = "") {
   });
 }
 
-/**
- * Refills the topbar's "Filter by Category" dropdown, preserving
- * the current selection if it still exists (falls back to "All
- * Categories" if the selected category was just deleted).
- */
 function populateCategoryFilterDropdown() {
   const select = document.getElementById("categoryFilter");
   if (!select) return;
@@ -367,10 +287,6 @@ function populateCategoryFilterDropdown() {
   select.value = stillExists ? previousValue : "all";
 }
 
-/**
- * Renders the category list inside the "Manage Categories" modal,
- * one row per category with a delete button.
- */
 function renderCategoriesList() {
   const listEl = document.getElementById("categoriesList");
   const emptyEl = document.getElementById("categoriesEmptyState");
@@ -396,18 +312,7 @@ function renderCategoriesList() {
   });
 }
 
-/* =========================================================
-   SIDEBAR NAVIGATION — switching between the 3 pages
-   (Dashboard / Sold Products / Reorder Alerts).
-   "Record Sale" is handled separately in app.js since it just
-   opens a modal instead of switching a page.
-========================================================= */
 
-/**
- * Shows the view matching `section` ("dashboard" | "products" | "alerts")
- * and hides the other two. Also (re)renders that view's content so
- * it's never stale when you switch to it.
- */
 function switchDashboardView(section) {
   const views = {
     dashboard: document.getElementById("dashboardView"),
@@ -428,11 +333,6 @@ function switchDashboardView(section) {
   if (section === "alerts") renderReorderView();
 }
 
-/**
- * Renders the "Sold Products" page: total items sold, total
- * revenue, total profit (from analytics.js's getSoldProductsSummary),
- * plus one row per product that has ever been sold.
- */
 function renderSoldProductsView() {
   const tbody = document.getElementById("soldProductsTableBody");
   const emptyState = document.getElementById("soldProductsEmptyState");
@@ -483,15 +383,6 @@ function buildSoldProductRow(entry) {
   return tr;
 }
 
-/**
- * Renders the "Daily Sales" panel: reads whichever date is
- * selected in the #dailySalesDate input (defaults to today if
- * empty), pulls that date's sales via analytics.js's
- * getDailySalesSummary(), and renders summary chips + a table.
- * Reuses buildSoldProductRow() since the columns are identical
- * to the all-time Sold Products table — just pre-filtered to
- * one day.
- */
 function renderDailySalesView() {
   const dateInput = document.getElementById("dailySalesDate");
   const tbody = document.getElementById("dailySalesTableBody");
@@ -530,14 +421,6 @@ function renderDailySalesView() {
   });
 }
 
-/**
- * Renders the "Reorder Alerts" page: ONLY products whose status
- * is "reorder" (current stock <= reorder point), sorted so the
- * most urgent (lowest stock left) shows first. Uses buildReorderRow(),
- * which mirrors the main Inventory table layout but swaps the
- * "Needs Reorder" badge for a "Reorder" button that opens the
- * reorder form for that product.
- */
 function renderReorderView() {
   const tbody = document.getElementById("reorderTableBody");
   const emptyState = document.getElementById("reorderEmptyState");
@@ -561,11 +444,6 @@ function renderReorderView() {
   });
 }
 
-/**
- * Refills the "Product" <select> inside the Record Sale modal
- * with the current list of products. Called every time that
- * modal is opened, so it's never stale.
- */
 function populateSaleProductDropdown() {
   const select = document.getElementById("saleProduct");
   const products = getProducts();
