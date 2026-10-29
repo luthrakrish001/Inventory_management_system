@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+    const uri = process.env.MONGODB_URI || "mongodb+srv://vasuaneja14_db_user:vasu123@cluster0.lf8b6ai.mongodb.net/inventorypilot?retryWrites=true&w=majority" ;
 
   if (!uri || uri.includes("<username>") || uri.includes("<password>")) {
     console.warn("==================================================================");
