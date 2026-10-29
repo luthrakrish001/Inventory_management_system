@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-/**
- * Connect to MongoDB Atlas
- */
+
 const connectDB = async () => {
   const uri = process.env.MONGODB_URI;
 
@@ -27,7 +25,7 @@ const connectDB = async () => {
     console.error("  1. Network Access: Ensure your IP address is whitelisted in MongoDB Atlas Network Access (or set to 0.0.0.0/0 for dev).");
     console.error("  2. Database Access: Ensure your database user credentials (username and password) are correct.");
     console.error("  3. Connection String: Ensure the format starts with mongodb+srv://");
-    // Do not terminate process in development so server can still serve health check / static files
+  
     if (process.env.NODE_ENV === "production") {
       process.exit(1);
     }
