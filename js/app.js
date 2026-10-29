@@ -1,20 +1,7 @@
-/* =========================================================
-   app.js
-   -----------------------------------------------------------
-   The "conductor" of the whole app. This file:
-     - Runs once when the page loads (init)
-     - Listens for every click / submit / input event
-     - Decides WHEN to call product.js / sales.js / forecast.js
-     - Tells ui.js to re-render after anything changes
-   This file coordinates user actions with the MongoDB Atlas models.
-========================================================= */
 
-// Tracks whether the product modal is currently in "add" or "edit"
-// mode, and which product is being edited (null = adding new).
 let editingProductId = null;
 
-// Holds the base64 image string picked in the product modal,
-// before the form is actually submitted.
+
 let selectedImageData = null;
 
 document.addEventListener("DOMContentLoaded", initApp);
@@ -33,10 +20,7 @@ async function initApp() {
   attachEventListeners();
 }
 
-/**
- * someone is logged in by the time this runs, but we guard anyway
- * in case this file is ever reused on a page without that check.
- */
+
 function renderLoggedInUser() {
   const user = getCurrentUser();
   if (!user) return;
@@ -46,11 +30,7 @@ function renderLoggedInUser() {
 }
 
 function attachEventListeners() {
-  // ---------- Sidebar nav ----------
-  // "Record Sale" just opens the modal — it doesn't switch pages,
-  // so the currently active view/highlight is left untouched.
-  // Dashboard / Sold Products / Reorder Alerts each swap which
-  // <div> is visible via switchDashboardView() in ui.js.
+
   document.querySelectorAll(".nav-link").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -67,33 +47,33 @@ function attachEventListeners() {
     });
   });
 
-  // ---------- Search / Filter / Sort ----------
+
   document.getElementById("searchInput").addEventListener("input", renderDashboard);
   document.getElementById("filterStatus").addEventListener("change", renderDashboard);
   document.getElementById("categoryFilter").addEventListener("change", renderDashboard);
   document.getElementById("sortBy").addEventListener("change", renderDashboard);
   document.getElementById("dailySalesDate").addEventListener("change", renderDailySalesView);
 
-  // ---------- Categories (manage modal) ----------
+
   document.getElementById("manageCategoriesBtn").addEventListener("click", openCategoriesModal);
   document.getElementById("manageCategoriesFromProductBtn").addEventListener("click", openCategoriesModal);
   document.getElementById("closeCategoriesModal").addEventListener("click", closeCategoriesModal);
   document.getElementById("categoryForm").addEventListener("submit", handleCategoryFormSubmit);
   document.getElementById("categoriesList").addEventListener("click", handleCategoryListClick);
 
-  // ---------- Logout ----------
+
   document.getElementById("logoutBtn").addEventListener("click", () => {
     if (confirm("Log out of InventoryPilot?")) {
       logoutUser();
     }
   });
 
-  // ---------- Add Product modal open/close ----------
+
   document.getElementById("openAddProductBtn").addEventListener("click", openAddProductModal);
   document.getElementById("closeProductModal").addEventListener("click", closeProductModal);
   document.getElementById("cancelProductBtn").addEventListener("click", closeProductModal);
 
-  // ---------- Photo upload ----------
+
   document.getElementById("photoUploadBox").addEventListener("click", () => {
     document.getElementById("productImage").click();
   });
@@ -101,29 +81,24 @@ function attachEventListeners() {
 
   document.getElementById("productForm").addEventListener("submit", handleProductFormSubmit);
 
-  // ---------- Record Sale modal open/close ----------
+
   document.getElementById("closeSaleModal").addEventListener("click", closeSaleModal);
   document.getElementById("cancelSaleBtn").addEventListener("click", closeSaleModal);
 
-  // ---------- Sale form submit ----------
+
   document.getElementById("saleForm").addEventListener("submit", handleSaleFormSubmit);
 
-  // ---------- Reorder modal open/close ----------
+
   document.getElementById("closeReorderModal").addEventListener("click", closeReorderModal);
   document.getElementById("cancelReorderBtn").addEventListener("click", closeReorderModal);
 
-  // ---------- Reorder form submit ----------
+
   document.getElementById("reorderForm").addEventListener("submit", handleReorderFormSubmit);
 
-  // Recalculate the total bill live as the owner adjusts quantity
-  // (unit price itself is fixed, so quantity is the only input to it).
+
   document.getElementById("reorderQuantity").addEventListener("input", updateReorderTotalBill);
 
-  // ---------- Edit / Delete buttons (event delegation) ----------
-  // Shared by BOTH the main Inventory table (Dashboard view) and
-  // the Reorder Alerts table — rows are re-created every render,
-  // so delegation means we never have to re-attach listeners after
-  // each re-render, on either table.
+
   document.getElementById("productsTableBody").addEventListener("click", handleProductRowActionClick);
   document.getElementById("reorderTableBody").addEventListener("click", handleProductRowActionClick);
 }
@@ -142,9 +117,6 @@ function handleProductRowActionClick(e) {
   }
 }
 
-/* =========================================================
-   PRODUCT MODAL — ADD / EDIT
-========================================================= */
 
 function openAddProductModal() {
   editingProductId = null;
@@ -175,7 +147,7 @@ function openEditProductModal(productId) {
   document.getElementById("productLeadTime").value = product.leadTime;
   document.getElementById("productSafetyStock").value = product.safetyStock;
 
-  // Show existing photo preview, if any
+
   const preview = document.getElementById("photoPreview");
   const placeholder = document.getElementById("photoPlaceholder");
   if (product.image) {
@@ -208,10 +180,7 @@ function clearProductFormErrors() {
   document.querySelectorAll(".form-group input, .form-group select").forEach((el) => el.classList.remove("input-error"));
 }
 
-/**
- * Reads the chosen file, converts it to base64 (utils.js),
- * and shows a live preview inside the upload box.
- */
+
 async function handleImageSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -230,11 +199,7 @@ async function handleImageSelect(e) {
   }
 }
 
-/**
- * Handles submit for BOTH add and edit, since they share one form.
- * We branch on `editingProductId` to decide which product.js
- * function to call.
- */
+
 async function handleProductFormSubmit(e) {
   e.preventDefault();
 
@@ -283,10 +248,7 @@ async function handleProductFormSubmit(e) {
   }
 }
 
-/**
- * Maps each validation error onto its matching <span class="error-text">
- * and highlights the offending input field.
- */
+
 function displayProductErrors(errors) {
   const fieldMap = {
     name: "productName",
@@ -323,9 +285,7 @@ async function handleDeleteProduct(productId) {
   }
 }
 
-/* =========================================================
-   SALE MODAL
-========================================================= */
+
 
 function openSaleModal() {
   populateSaleProductDropdown();
@@ -369,9 +329,7 @@ async function handleSaleFormSubmit(e) {
   }
 }
 
-/* =========================================================
-   MANAGE CATEGORIES MODAL
-========================================================= */
+
 
 function openCategoriesModal() {
   renderCategoriesList();
@@ -383,8 +341,7 @@ function openCategoriesModal() {
 function closeCategoriesModal() {
   document.getElementById("categoriesModal").classList.add("hidden");
 
-  // Refresh dropdowns elsewhere in case categories were
-  // added/deleted while this modal was open.
+
   populateCategoryFilterDropdown();
   if (!document.getElementById("productModal").classList.contains("hidden")) {
     populateProductCategorySelect(document.getElementById("productCategory").value);
@@ -423,34 +380,22 @@ async function handleCategoryFormSubmit(e) {
   }
 }
 
-/* =========================================================
-   REORDER MODAL
-   -----------------------------------------------------------
-   Opened from the "Reorder" button on the Reorder Alerts page.
-   Lets the owner fill in everything needed to restock a product
-   that has dropped to/below its reorder point: quantity, unit
-   price, dealer/supplier, expected delivery date, and notes.
-========================================================= */
 
 function openReorderModal(productId) {
   const product = getProductById(productId);
   if (!product) return;
 
   const forecast = getProductForecast(product);
-  // Suggests enough stock to climb back above the reorder point
-  // plus a safety-stock buffer — the owner can always change it.
+
   const suggestedQuantity = Math.max(
     Math.ceil(forecast.reorderPoint - product.stock + product.safetyStock),
     1
   );
 
-  // Unit price is fixed to the product's current cost price — the
-  // owner can't edit it from this form.
+
   const fixedUnitPrice = product.costPrice;
 
-  // Expected delivery date is randomized (1-7 days out from today)
-  // and calculated automatically the moment the order is placed —
-  // it isn't something the owner picks manually.
+
   const expectedDate = addDaysToDate(getTodayDate(), randomInt(1, 7));
 
   document.getElementById("reorderProductId").value = product.id;
@@ -468,11 +413,7 @@ function openReorderModal(productId) {
   document.getElementById("reorderModal").classList.remove("hidden");
 }
 
-/**
- * Recomputes and displays the total bill (quantity × fixed unit
- * price) shown below the reorder form. Called whenever the modal
- * opens and whenever the owner changes the quantity.
- */
+
 function updateReorderTotalBill() {
   const quantity = Number(document.getElementById("reorderQuantity").value) || 0;
   const unitPrice = Number(document.getElementById("reorderUnitPrice").dataset.fixedPrice) || 0;
