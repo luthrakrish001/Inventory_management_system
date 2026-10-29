@@ -4,11 +4,7 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/**
- * @desc    Get all categories for current user
- * @route   GET /api/categories
- * @access  Private
- */
+
 const getCategories = async (req, res, next) => {
   try {
     const categories = await Category.find({}).sort({ name: 1 });
