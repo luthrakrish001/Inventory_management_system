@@ -2,18 +2,14 @@ const Product = require("../models/Product");
 const Sale = require("../models/Sale");
 const Reorder = require("../models/Reorder");
 
-/**
- * @desc    Get dashboard summary statistics & analytics
- * @route   GET /api/analytics/dashboard
- * @access  Private
- */
+
 const getDashboardAnalytics = async (req, res, next) => {
   try {
     const products = await Product.find({});
     const sales = await Sale.find({});
     const reorders = await Reorder.find({});
 
-    // Calculate inventory metrics
+  
     let totalStockUnits = 0;
     let totalInventoryCostValue = 0;
     let totalPotentialRetailValue = 0;
