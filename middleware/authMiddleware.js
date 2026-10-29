@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-/**
- * Protect routes: requires valid JWT bearer token
- */
+
 const protect = async (req, res, next) => {
   let token;
 
@@ -45,10 +43,7 @@ const protect = async (req, res, next) => {
   }
 };
 
-/**
- * Optional authentication: attaches req.user if valid token exists,
- * but allows request to continue if unauthenticated.
- */
+
 const optionalAuth = async (req, res, next) => {
   if (
     req.headers.authorization &&
