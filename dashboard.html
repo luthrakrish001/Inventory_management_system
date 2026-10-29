@@ -18,7 +18,7 @@
 </head>
 <body>
 
-  <!-- ============ SIDEBAR ============ -->
+
   <aside class="sidebar">
     <div class="brand">
       <span class="brand-mark">IP</span>
@@ -44,7 +44,7 @@
     </div>
   </aside>
 
-  <!-- ============ MAIN CONTENT ============ -->
+
   <div class="main-wrapper">
 
     <!-- Top Navbar -->
@@ -89,7 +89,7 @@
     <main class="content">
 
       <div id="dashboardView">
-        <!-- ===== Stats Cards ===== -->
+        
         <section class="stats-grid">
           <div class="stat-card">
             <span class="stat-label">Total Products</span>
@@ -114,13 +114,13 @@
           </div>
         </section>
 
-        <!-- ===== Reorder Alerts Banner ===== -->
+        
         <section id="alertBanner" class="alert-banner hidden">
           <span class="alert-icon">&#9888;</span>
           <span id="alertText"></span>
         </section>
 
-        <!-- ===== Top Selling Products ===== -->
+        
         <section class="panel top-products-panel">
           <div class="panel-header">
             <h2>Top Selling Products</h2>
@@ -128,7 +128,7 @@
           </div>
 
           <div id="topProductsList" class="top-products-list">
-            <!-- rows injected by ui.js -->
+            
           </div>
 
           <p id="topProductsEmpty" class="empty-state hidden">
@@ -136,7 +136,7 @@
           </p>
         </section>
 
-        <!-- ===== Products Table ===== -->
+        
         <section class="panel">
           <div class="panel-header">
             <h2>Inventory Overview</h2>
@@ -161,7 +161,7 @@
                 </tr>
               </thead>
               <tbody id="productsTableBody">
-                <!-- rows injected by ui.js -->
+                
               </tbody>
             </table>
 
@@ -172,7 +172,7 @@
         </section>
       </div>
 
-      <!-- ===== SOLD PRODUCTS VIEW ("Products" nav) ===== -->
+      
       <div id="soldProductsView" class="hidden">
         <section class="stats-grid">
           <div class="stat-card">
@@ -189,7 +189,7 @@
           </div>
         </section>
 
-        <!-- ===== Daily Sales (pick a date, see what sold) ===== -->
+        
         <section class="panel">
           <div class="panel-header">
             <h2>Daily Sales</h2>
@@ -202,7 +202,7 @@
           </div>
 
           <div class="daily-sales-summary" id="dailySalesSummary">
-            <!-- summary chips injected by ui.js -->
+            
           </div>
 
           <div class="table-scroll">
@@ -217,7 +217,7 @@
                 </tr>
               </thead>
               <tbody id="dailySalesTableBody">
-                <!-- rows injected by ui.js -->
+                
               </tbody>
             </table>
 
@@ -245,7 +245,7 @@
                 </tr>
               </thead>
               <tbody id="soldProductsTableBody">
-                <!-- rows injected by ui.js -->
+               
               </tbody>
             </table>
 
@@ -256,7 +256,7 @@
         </section>
       </div>
 
-      <!-- ===== REORDER ALERTS VIEW ("Reorder Alerts" nav) ===== -->
+     
       <div id="reorderView" class="hidden">
         <section class="panel">
           <div class="panel-header">
@@ -282,7 +282,7 @@
                 </tr>
               </thead>
               <tbody id="reorderTableBody">
-                <!-- rows injected by ui.js -->
+                
               </tbody>
             </table>
 
@@ -296,7 +296,7 @@
     </main>
   </div>
 
-  <!-- ============ ADD / EDIT PRODUCT MODAL ============ -->
+  
   <div id="productModal" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-header">
@@ -373,7 +373,7 @@
     </div>
   </div>
 
-  <!-- ============ RECORD SALE MODAL ============ -->
+  
   <div id="saleModal" class="modal-overlay hidden">
     <div class="modal modal-sm">
       <div class="modal-header">
@@ -407,7 +407,7 @@
     </div>
   </div>
 
-  <!-- ============ REORDER MODAL ============ -->
+
   <div id="reorderModal" class="modal-overlay hidden">
     <div class="modal modal-sm">
       <div class="modal-header">
@@ -463,7 +463,7 @@
     </div>
   </div>
 
-  <!-- ============ MANAGE CATEGORIES MODAL ============ -->
+
   <div id="categoriesModal" class="modal-overlay hidden">
     <div class="modal modal-sm">
       <div class="modal-header">
@@ -484,7 +484,7 @@
         </form>
 
         <ul id="categoriesList" class="categories-list">
-          <!-- rows injected by ui.js -->
+         
         </ul>
 
         <p id="categoriesEmptyState" class="empty-state hidden">
@@ -494,11 +494,10 @@
     </div>
   </div>
 
-  <!-- ============ TOAST NOTIFICATION ============ -->
+
   <div id="toast" class="toast hidden"></div>
 
-  <!-- ============ SCRIPTS (order matters — no modules used) ============ -->
-  <!-- api.js and auth.js are already loaded in <head> for the auth guard -->
+
   <script src="js/utils.js"></script>
   <script src="js/categories.js"></script>
   <script src="js/product.js"></script>
