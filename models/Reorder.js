@@ -62,7 +62,7 @@ const reorderSchema = new mongoose.Schema(
   }
 );
 
-// Calculate totalCost before saving
+
 reorderSchema.pre("save", function (next) {
   if (this.unitPrice !== undefined && this.quantity) {
     this.totalCost = Number((this.unitPrice * this.quantity).toFixed(2));
