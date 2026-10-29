@@ -45,7 +45,7 @@ async function apiRequest(endpoint, options = {}) {
   }
 }
 
-// ================= AUTH API =================
+
 const AuthAPI = {
   register: (name, email, password) =>
     apiRequest("/auth/register", {
@@ -77,7 +77,7 @@ const AuthAPI = {
   },
 };
 
-// ================= PRODUCTS CRUD API =================
+
 const ProductAPI = {
   getAll: (params = {}) => {
     const query = new URLSearchParams(params).toString();
@@ -104,7 +104,7 @@ const ProductAPI = {
     }),
 };
 
-// ================= CATEGORIES CRUD API =================
+
 const CategoryAPI = {
   getAll: () => apiRequest("/categories"),
 
@@ -120,7 +120,7 @@ const CategoryAPI = {
     }),
 };
 
-// ================= SALES CRUD API =================
+
 const SaleAPI = {
   getAll: (params = {}) => {
     const query = new URLSearchParams(params).toString();
@@ -141,7 +141,7 @@ const SaleAPI = {
     }),
 };
 
-// ================= REORDERS CRUD API =================
+
 const ReorderAPI = {
   getAll: (params = {}) => {
     const query = new URLSearchParams(params).toString();
@@ -166,7 +166,7 @@ const ReorderAPI = {
     }),
 };
 
-// ================= ANALYTICS API =================
+
 const AnalyticsAPI = {
   getDashboard: () => apiRequest("/analytics/dashboard"),
 };
