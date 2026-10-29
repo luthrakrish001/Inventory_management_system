@@ -1,9 +1,3 @@
-/* =========================================================
-   InventoryPilot — Stylesheet
-   Palette: deep navy sidebar + electric blue accent on a
-   near-white workspace. Numbers (stock/prices) use a mono
-   face so the data reads like a real inventory ledger.
-========================================================= */
 
 :root {
   --bg: #F6F8FC;
@@ -111,10 +105,6 @@ h1, h2, h3 {
 }
 
 .hidden { display: none !important; }
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
 .sidebar {
   width: 240px;
   flex-shrink: 0;
