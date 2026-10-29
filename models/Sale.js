@@ -43,7 +43,7 @@ const saleSchema = new mongoose.Schema(
   }
 );
 
-// Calculate totalAmount before saving if unitPrice is present
+
 saleSchema.pre("save", function (next) {
   if (this.unitPrice !== undefined && this.quantity) {
     this.totalAmount = Number((this.unitPrice * this.quantity).toFixed(2));
