@@ -1,11 +1,7 @@
 const Sale = require("../models/Sale");
 const Product = require("../models/Product");
 
-/**
- * @desc    Record a new sale & decrease product stock
- * @route   POST /api/sales
- * @access  Private
- */
+
 const recordSale = async (req, res, next) => {
   try {
     const { productId, quantity, date } = req.body;
