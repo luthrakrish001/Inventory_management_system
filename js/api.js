@@ -3,7 +3,7 @@ const API_BASE_URL =
   // window.location.port === "5000"
   //   ? "/api"
   //   : `http://${window.location.hostname || "localhost"}:5000/api`;
-  `https://inventory-management-system-l50i.onrender.com`
+  'https://inventory-management-system-l50i.onrender.com/api'
 
 
 function getAuthToken() {
