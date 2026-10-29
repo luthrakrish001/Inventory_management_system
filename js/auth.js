@@ -1,10 +1,4 @@
-/* =========================================================
-   auth.js
-   -----------------------------------------------------------
-   Authentication client logic for InventoryPilot.
-   User registration and logins are processed directly
-   against MongoDB Atlas via the backend REST API.
-========================================================= */
+
 
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_UPPERCASE_REGEX = /[A-Z]/;
@@ -53,9 +47,7 @@ function validateSignup(values) {
   return { isValid: Object.keys(errors).length === 0, errors };
 }
 
-/**
- * Registers a new user directly in MongoDB Atlas.
- */
+
 async function signupUser(values) {
   const res = await AuthAPI.register(values.name, values.email, values.password);
   if (!res || !res.user) {
@@ -71,9 +63,7 @@ function validateLogin(values) {
   return { isValid: Object.keys(errors).length === 0, errors };
 }
 
-/**
- * Authenticates user directly against MongoDB Atlas and stores session.
- */
+
 async function loginUser(values) {
   const res = await AuthAPI.login(values.email, values.password);
   if (!res || !res.user) {
@@ -92,9 +82,7 @@ async function loginUser(values) {
 
 const SESSION_USER_KEY = "currentUser";
 
-/**
- * Sweeps any old localStorage entries to guarantee 100% clean state
- */
+
 (function clearAnyLegacyStorage() {
   try {
     const keys = ["currentUser", "token", "products", "sales", "categories", "reorders", "users"];
@@ -102,9 +90,7 @@ const SESSION_USER_KEY = "currentUser";
   } catch (e) {}
 })();
 
-/**
- * Returns the currently authenticated user from active session
- */
+
 function getCurrentUser() {
   try {
     const raw = sessionStorage.getItem(SESSION_USER_KEY);
@@ -114,18 +100,14 @@ function getCurrentUser() {
   }
 }
 
-/**
- * Saves current user profile into active session
- */
+
 function setCurrentUser(user) {
   try {
     sessionStorage.setItem(SESSION_USER_KEY, JSON.stringify(user));
   } catch (err) {}
 }
 
-/**
- * Clears current session
- */
+
 function clearCurrentUser() {
   try {
     sessionStorage.removeItem(SESSION_USER_KEY);
