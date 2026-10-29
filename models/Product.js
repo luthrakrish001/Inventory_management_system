@@ -68,7 +68,7 @@ const productSchema = new mongoose.Schema(
 
 productSchema.index({ user: 1, name: 1 });
 
-// Virtual to calculate profit margin
+
 productSchema.virtual("profitMargin").get(function () {
   const sp = typeof this.sellingPrice === "number" ? this.sellingPrice : 0;
   const cp = typeof this.costPrice === "number" ? this.costPrice : 0;
@@ -78,7 +78,7 @@ productSchema.virtual("profitMargin").get(function () {
   return 0;
 });
 
-// Virtual to calculate total inventory value for this product
+
 productSchema.virtual("inventoryValue").get(function () {
   const st = typeof this.stock === "number" ? this.stock : 0;
   const cp = typeof this.costPrice === "number" ? this.costPrice : 0;
