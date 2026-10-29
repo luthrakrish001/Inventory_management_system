@@ -1,7 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   const user = getCurrentUser();
-  if (!user) return; // nobody logged in — leave the default Log In / Sign Up buttons as-is
+  if (!user) return; 
 
   const dashboardCtaHtml = `<a href="dashboard.html" class="btn btn-primary">Go to Dashboard</a>`;
   const dashboardCtaHtmlLg = `<a href="dashboard.html" class="btn btn-primary btn-lg">Go to Dashboard</a>`;
