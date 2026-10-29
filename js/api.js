@@ -1,18 +1,10 @@
-/* =========================================================
-   api.js - Frontend API Client for InventoryPilot Backend
-   -----------------------------------------------------------
-   Connects frontend requests to the Node.js / Express /
-   MongoDB Atlas REST API.
-   ========================================================= */
 
 const API_BASE_URL =
   window.location.port === "5000"
     ? "/api"
     : `http://${window.location.hostname || "localhost"}:5000/api`;
 
-/**
- * Helper to get authorization token from active session
- */
+
 function getAuthToken() {
   try {
     return sessionStorage.getItem("token") || "";
@@ -21,9 +13,7 @@ function getAuthToken() {
   }
 }
 
-/**
- * Generic Fetch Wrapper with JSON handling and Auth headers
- */
+
 async function apiRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = getAuthToken();
