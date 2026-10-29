@@ -1,16 +1,6 @@
-/* =========================================================
-   sales.js
-   -----------------------------------------------------------
-   CRUD Operations for Recording Sales.
-   All sales are recorded directly into MongoDB Atlas Sale model,
-   which automatically decrements product stock in MongoDB Atlas.
-========================================================= */
 
 let _sales = [];
 
-/**
- * Loads all sales directly from MongoDB Atlas Sale model.
- */
 async function loadSalesFromDB() {
   if (typeof SaleAPI === "undefined") return _sales;
   try {
@@ -28,16 +18,10 @@ async function loadSalesFromDB() {
   return _sales;
 }
 
-/**
- * Returns currently loaded sales.
- */
 function getSales() {
   return _sales;
 }
 
-/**
- * Validates the sale form values.
- */
 function validateSale(values) {
   const errors = {};
 
@@ -63,9 +47,6 @@ function validateSale(values) {
   };
 }
 
-/**
- * CREATE: Records a sale directly in MongoDB Atlas and updates product stock in MongoDB.
- */
 async function recordSale(values) {
   const res = await SaleAPI.record({
     productId: values.productId,
@@ -77,7 +58,6 @@ async function recordSale(values) {
     throw new Error(res?.error || "Failed to record sale in MongoDB Atlas");
   }
 
-  // Refresh both sales and products directly from MongoDB Atlas
   await Promise.all([
     loadSalesFromDB(),
     typeof loadProductsFromDB === "function" ? loadProductsFromDB() : Promise.resolve(),
@@ -86,9 +66,6 @@ async function recordSale(values) {
   return res.data;
 }
 
-/**
- * Returns all sales belonging to one product, sorted oldest to newest.
- */
 function getSalesForProduct(productId) {
   return _sales
     .filter(
