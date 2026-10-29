@@ -1,6 +1,4 @@
-/**
- * Catch-all for undefined routes
- */
+
 const notFound = (req, res, next) => {
   const error = new Error(`Route not found - ${req.originalUrl}`);
   res.status(404);
