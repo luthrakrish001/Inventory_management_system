@@ -4,7 +4,7 @@ require("dotenv").config();
  * Connect to MongoDB Atlas
  */
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI || "mongodb+srv://vasuaneja14_db_user:vasu123@cluster0.lf8b6ai.mongodb.net/";
+  const uri = process.env.MONGODB_URI;
 
   if (!uri || uri.includes("<username>") || uri.includes("<password>")) {
     console.warn("==================================================================");
