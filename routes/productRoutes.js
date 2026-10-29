@@ -9,7 +9,6 @@ const {
 } = require("../controllers/productController");
 const { optionalAuth } = require("../middleware/authMiddleware");
 
-// Products CRUD endpoints
 router
   .route("/")
   .get(optionalAuth, getProducts)
