@@ -28,17 +28,6 @@
   --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
   --shadow-modal: 0 24px 60px rgba(11, 22, 64, 0.28);
 }
-
-/* =========================================================
-   DARK THEME
-   -----------------------------------------------------------
-   Set via theme.js: <html data-theme="dark">. Every rule in
-   this stylesheet already reads color through the variables
-   above, so overriding them here re-themes the ENTIRE site —
-   landing page, login/signup, and the dashboard — from one
-   place. --navy stays the same in both themes since the
-   sidebar/auth pages are already a fixed dark navy by design.
-========================================================= */
 [data-theme="dark"] {
   --bg: #0B1220;
   --surface: #141D2E;
