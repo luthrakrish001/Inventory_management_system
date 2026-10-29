@@ -9,7 +9,7 @@ const generateToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 };
-
+ 
 /**
  * @desc    Register a new user
  * @route   POST /api/auth/register
