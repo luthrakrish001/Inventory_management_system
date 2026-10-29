@@ -11,7 +11,7 @@ const seedData = async () => {
 
     console.log("🌱 Starting database seeding...");
 
-    // Create or find a demo user
+    
     let user = await User.findOne({ email: "demo@inventorypilot.com" });
     if (!user) {
       user = await User.create({
@@ -22,7 +22,7 @@ const seedData = async () => {
       console.log("👤 Created demo user: demo@inventorypilot.com (Password: Password123!)");
     }
 
-    // Seed Categories
+    
     const sampleCategories = ["Electronics", "Accessories", "Office Supplies", "Peripherals"];
     for (const catName of sampleCategories) {
       const exists = await Category.findOne({ user: user._id, name: catName });
@@ -32,7 +32,7 @@ const seedData = async () => {
     }
     console.log("📁 Seeded categories");
 
-    // Sample Products
+    
     const sampleProducts = [
       {
         name: "Wireless Ergonomic Mouse",
