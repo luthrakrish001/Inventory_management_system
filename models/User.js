@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Encrypt password before saving
+
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -41,12 +41,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Match entered password to hashed password in database
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Exclude password field when converting document to JSON
+
 userSchema.methods.toJSON = function () {
   const userObject = this.toObject();
   delete userObject.password;
